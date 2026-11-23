@@ -4,44 +4,230 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CHATACOFFZ</title>
+<title>CHATACOFFZ | Free Fire</title>
 <style>
-body {
-  background: #10101b;
-  color: white;
-  font-family: Arial, sans-serif;
-  text-align: center;
-  padding: 30px 15px;
-}
-h1 { color: #00e5ff; }
-.card {
-  background: #222238;
-  padding: 22px;
-  margin: 15px auto;
-  border-radius: 15px;
-  max-width: 350px;
-}
-button {
-  background: #00e5ff;
-  border: none;
-  padding: 12px 22px;
-  border-radius: 9px;
-  font-weight: bold;
-}
+*{box-sizing:border-box}
+body{margin:0;background:#090d19;color:white;font-family:Arial,sans-serif}
+header{background:#111a30;padding:22px;text-align:center;border-bottom:2px solid #00cfff}
+h1,h2{color:#00d9ff}
+header h1{margin:0;font-size:30px}
+header p{color:#b6c5d9}
+nav{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:15px;background:#12192a}
+button,select,input{padding:12px;border-radius:9px;border:0;font-size:14px}
+button{background:#00cfff;color:#06111c;font-weight:bold;cursor:pointer}
+button:hover{background:#65e6ff}
+nav button{padding:10px}
+main{max-width:1050px;margin:auto;padding:16px}
+section{margin:28px 0}
+.card{background:#172136;border:1px solid #2a3d58;border-radius:14px;padding:20px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.price{font-size:23px;color:#52ffad;font-weight:bold}
+input,select{width:100%;background:#26334a;color:white;margin:8px 0}
+.small{color:#b7c4d7;font-size:13px}
+.hidden{display:none}
+#cartItems{line-height:2}
+footer{text-align:center;padding:28px;color:#9cacc2;background:#111a30}
 </style>
 </head>
 <body>
+<header>
 <h1>CHATACOFFZ ✓</h1>
 <p>Loja e dicas de Free Fire</p>
+<p>Sensibilidades • Diamantes • Estratégias</p>
+</header>
+
+<nav>
+<button onclick="go('inicio')">Início</button>
+<button onclick="go('sensi')">Sensibilidades</button>
+<button onclick="go('dicas')">Dicas</button>
+<button onclick="go('loja')">Loja</button>
+<button onclick="go('carrinho')">Carrinho <span id="count">0</span></button>
+<button onclick="go('conta')">Conta</button>
+</nav>
+
+<main>
+<section id="inicio">
 <div class="card">
-<h2>Sensibilidades</h2>
-<p>Configurações para celulares e PC</p>
-<button>Em breve</button>
+<h2>Bem-vindo ao CHATACOFFZ</h2>
+<p>Encontre configurações para melhorar sua experiência no Free Fire.</p>
+<button onclick="go('sensi')">Ver sensibilidades</button>
 </div>
+</section>
+
+<section id="sensi">
+<h2>🎯 Sensibilidades Free Fire</h2>
 <div class="card">
-<h2>Dicas de personagens</h2>
-<p>Rushador, Suporte e Atirador</p>
-<button>Em breve</button>
+<label>Escolha seu dispositivo</label>
+<select id="device">
+<option value="redmi">Redmi 14C</option>
+<option value="poco">POCO X6</option>
+<option value="samsung">Samsung Galaxy A71</option>
+<option value="iphone">iPhone</option>
+<option value="pc">PC / Emulador</option>
+<option value="outro">Outro celular</option>
+</select>
+<label>Estilo</label>
+<select id="style">
+<option value="baixa">Baixa</option>
+<option value="media">Média</option>
+<option value="alta">Alta</option>
+</select>
+<button onclick="showSensi()">Gerar configuração</button>
+<div id="sensiResult"></div>
 </div>
+</section>
+
+<section id="dicas">
+<h2>🔥 Dicas de personagens</h2>
+<div class="grid">
+<div class="card"><h3>Rushador</h3><p>Use cobertura, movimentação rápida e habilidades de mobilidade.</p></div>
+<div class="card"><h3>Atirador de elite</h3><p>Priorize posicionamento, precisão e comunicação com a equipe.</p></div>
+<div class="card"><h3>Suporte</h3><p>Ajude seus aliados com cura, proteção e recursos.</p></div>
+<div class="card"><h3>Full Gás</h3><p>Combine movimentação agressiva com decisões rápidas.</p></div>
+<div class="card"><h3>Zé Carrinho</h3><p>Use veículos com estratégia e evite ficar exposto.</p></div>
+</div>
+</section>
+
+<section id="loja">
+<h2>🛒 Loja CHATACOFFZ</h2>
+<p class="small">Catálogo demonstrativo. Preços e disponibilidade precisam ser confirmados antes de vender.</p>
+<div class="grid" id="products"></div>
+</section>
+
+<section id="carrinho">
+<h2>🛍️ Meu carrinho</h2>
+<div class="card">
+<div id="cartItems">Carrinho vazio.</div>
+<h3 id="total">Total: R$ 0,00</h3>
+<button onclick="checkout()">Continuar pedido</button>
+<button onclick="clearCart()">Limpar carrinho</button>
+<p id="checkoutMessage" class="small"></p>
+</div>
+</section>
+
+<section id="conta">
+<h2>👤 Minha conta</h2>
+<div class="card">
+<p>Login com Google e painel de administração estarão disponíveis após configurar um serviço de autenticação seguro.</p>
+<button onclick="alert('Login ainda não configurado.')">Entrar com Google</button>
+</div>
+</section>
+</main>
+
+<footer>
+CHATACOFFZ © 2026<br>
+Loja independente, não afiliada à Garena.
+</footer>
+
+<script>
+const products=[
+{name:"Sensibilidade personalizada",price:15},
+{name:"100 diamantes",price:5},
+{name:"310 diamantes",price:15},
+{name:"520 diamantes",price:25},
+{name:"1060 diamantes",price:50},
+{name:"2180 diamantes",price:100}
+];
+
+let cart=[];
+
+function money(v){
+return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+}
+
+function go(id){
+document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+
+function renderProducts(){
+const box=document.getElementById("products");
+box.innerHTML="";
+products.forEach((p,i)=>{
+const card=document.createElement("div");
+card.className="card";
+const title=document.createElement("h3");
+title.textContent=p.name;
+const price=document.createElement("p");
+price.className="price";
+price.textContent=money(p.price);
+const btn=document.createElement("button");
+btn.textContent="Adicionar ao carrinho";
+btn.onclick=()=>addCart(i);
+card.append(title,price,btn);
+box.appendChild(card);
+});
+}
+
+function addCart(i){
+cart.push(i);
+renderCart();
+alert("Produto adicionado!");
+}
+
+function renderCart(){
+const box=document.getElementById("cartItems");
+box.innerHTML="";
+let total=0;
+cart.forEach((id,index)=>{
+const p=products[id];
+total+=p.price;
+const row=document.createElement("div");
+row.textContent=p.name+" — "+money(p.price)+" ";
+const remove=document.createElement("button");
+remove.textContent="Remover";
+remove.onclick=()=>{
+cart.splice(index,1);
+renderCart();
+};
+row.appendChild(remove);
+box.appendChild(row);
+});
+if(!cart.length)box.textContent="Carrinho vazio.";
+document.getElementById("total").textContent="Total: "+money(total);
+document.getElementById("count").textContent=cart.length;
+}
+
+function clearCart(){
+cart=[];
+renderCart();
+document.getElementById("checkoutMessage").textContent="";
+}
+
+function checkout(){
+const msg=document.getElementById("checkoutMessage");
+msg.textContent=cart.length
+?"Pedido demonstrativo. Pagamento ainda não habilitado."
+:"Adicione um produto primeiro.";
+}
+
+function showSensi(){
+const device=document.getElementById("device").value;
+const style=document.getElementById("style").value;
+const base={
+baixa:[55,48,45,40,30,55],
+media:[110,100,90,80,65,100],
+alta:[175,165,155,140,110,160]
+}[style];
+const adjust={
+redmi:0,poco:5,samsung:-5,iphone:-10,pc:-15,outro:0
+}[device];
+const values=base.map(v=>Math.max(0,Math.min(200,v+adjust)));
+const names=["Geral","Ponto vermelho","Mira 2x","Mira 4x","Mira AWM","Olhadinha"];
+const result=document.getElementById("sensiResult");
+result.innerHTML="<h3>Configuração sugerida</h3>";
+names.forEach((n,i)=>{
+const p=document.createElement("p");
+p.textContent=n+": "+values[i];
+result.appendChild(p);
+});
+const note=document.createElement("p");
+note.className="small";
+note.textContent="Valores iniciais para testar e ajustar conforme sua preferência.";
+result.appendChild(note);
+}
+
+renderProducts();
+renderCart();
+</script>
 </body>
 </html>
