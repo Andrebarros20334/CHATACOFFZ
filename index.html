@@ -252,5 +252,62 @@ renderCart();
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
 </script>
+  <div style="text-align:center;padding:20px">
+  <button id="google-login">Entrar com Google</button>
+    <p id="user-info"></p>
+<button id="google-logout" hidden>Sair da conta</button>
+  </div>
+  
+<script type="module">
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+
+import { initializeApp, getApps } from
+"https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+
+const config = {
+  apiKey: "AIzaSyAw4FJEEw9kq7TxSIxTVD4nLBKiSpQpclY",
+  authDomain: "chatacoffz.firebaseapp.com",
+  projectId: "chatacoffz",
+  appId: "1:175083730993:web:90dbac66486ba62899bd10"
+};
+
+const app = getApps().length
+  ? getApps()[0]
+  : initializeApp(config);
+
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+const login = document.getElementById("google-login");
+const logout = document.getElementById("google-logout");
+const info = document.getElementById("user-info");
+
+login.onclick = async () => {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (error) {
+    alert("Erro no login: " + error.message);
+  }
+};
+
+logout.onclick = async () => {
+  await signOut(auth);
+};
+
+onAuthStateChanged(auth, user => {
+  login.hidden = !!user;
+  logout.hidden = !user;
+
+  info.textContent = user
+    ? "Conectado: " + (user.displayName || "Usuário")
+    : "";
+});
+</script>
 </body>
 </html>
